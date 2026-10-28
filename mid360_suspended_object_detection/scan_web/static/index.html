@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="本机 MID-360 二维扫描与障碍物测试工作台">
+  <title>MID-360 · 扫描工作台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/roi.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand-mark" aria-hidden="true">◉</div>
+    <div><div class="eyebrow">SENSOR WORKBENCH / 01</div><h1>MID-360 <span>扫描工作台</span></h1></div>
+    <div class="header-note"><span class="tag">二维扫描</span><span>雷达局部坐标 · m</span></div>
+  </header>
+  <main>
+    <aside class="panel controls">
+      <div class="section-heading"><h2>数据接入</h2><span class="small-label">WIRELESS</span></div>
+      <div id="status" class="status waiting" role="status">等待服务</div>
+      <p id="error" class="source-error" aria-live="polite"></p>
+      <dl class="source-details">
+        <dt>WebSocket</dt><dd id="source">—</dd>
+        <dt>订阅 / 实际 frame</dt><dd>/scan <span class="muted">/</span> <span id="frame">—</span></dd>
+        <dt>源时间戳</dt><dd>未提供</dd>
+        <dt>laserOffset [x, y, yaw]</dt><dd id="offset">—</dd>
+      </dl>
+      <p class="note">距离由 mm 转换为 m，外参仅展示。二维扫描没有 Z，无法判断悬挂高度。</p>
+      <div class="divider"></div>
+      <div class="section-heading"><h2>检测参数</h2><span class="small-label">LOCAL / XY</span></div>
+      <form id="config-form">
+        <fieldset><legend>前方检测区域 <span>m</span></legend><div class="input-grid" id="roi-fields"></div></fieldset>
+        <fieldset><legend>欧氏聚类</legend><div class="input-grid" id="cluster-fields"></div></fieldset>
+        <fieldset><legend>候选包围盒 <span>m</span></legend><div class="input-grid" id="box-fields"></div></fieldset>
+        <div class="form-actions"><button type="submit" class="primary" id="apply">应用并保存</button><button type="button" id="restore">恢复启动值</button></div>
+        <p id="config-message" class="note" role="status">拖动只在本次运行生效，点击“应用并保存”写入 YAML，重启后保留。</p>
+      </form>
+    </aside>
+    <section class="workspace">
+      <div class="metrics">
+        <div class="metric"><span>有效点 / 扫描点</span><strong id="point-count">—</strong><small>过滤零值和量程外距离</small></div>
+        <div class="metric"><span>ROI 内点数</span><strong id="roi-count">—</strong><small id="roi-hint">等待目标扫描</small></div>
+        <div class="metric"><span>障碍物候选</span><strong id="object-count">—</strong><small>宽 Y · 深 X</small></div>
+        <div class="metric"><span>接收 / 内容变化</span><strong id="rates">—</strong><small id="receive-age">尚未收到扫描</small></div>
+      </div>
+      <div class="panel plot-panel">
+        <div class="plot-toolbar"><div><h2>雷达俯视图</h2><span class="muted">X 向前 ↑ &nbsp; Y 向左 ←</span></div><div class="view-actions"><button id="fit-roi">定位 ROI</button><button id="fit-all">全部点</button><button id="zoom-in" aria-label="放大视图">＋</button><button id="zoom-out" aria-label="缩小视图">−</button></div></div>
+        <div class="canvas-wrap"><canvas id="scan-canvas" role="img" aria-label="等待二维扫描数据">浏览器需要支持 Canvas 才能绘制扫描。</canvas><div class="plot-overlay" id="plot-overlay">等待目标扫描…</div><div class="plot-help">滚轮缩放 · 拖动平移</div><div id="cursor" class="plot-cursor">X — / Y — m</div></div>
+        <div class="legend"><span><i class="point-key"></i>有效扫描</span><span><i class="roi-key"></i>检测区域</span><span><i class="object-key"></i>黄色候选</span><span><i class="selected-key"></i>最终障碍物</span><span id="scale-label" class="scale-label">网格 1 m</span></div>
+      </div>
+      <section class="panel objects-panel">
+        <div class="section-heading"><h2>候选物体</h2><span class="small-label" id="processing">等待分析</span></div>
+        <div class="table-wrap"><table><thead><tr><th>编号</th><th>最近距离</th><th>中心 X / Y</th><th>宽度 Y</th><th>深度 X</th><th>点数</th></tr></thead><tbody id="objects"><tr><td colspan="6" class="empty">等待目标扫描</td></tr></tbody></table></div>
+      </section>
+      <section class="panel publication-panel">
+        <div class="section-heading"><h2>ROS 2 发布</h2><span id="ros-status" class="small-label">等待服务</span></div>
+        <dl class="publication-meta">
+          <dt>实际话题</dt><dd id="ros-topic">—</dd>
+          <dt>消息类型</dt><dd id="ros-type">—</dd>
+          <dt>后端实际发布频率</dt><dd><strong id="ros-hz">—</strong><span class="muted"> · 目标 10 Hz · 最近 5 秒</span></dd>
+          <dt>累计发布 / 最近发布</dt><dd id="ros-count-age">—</dd>
+        </dl>
+        <p id="ros-error" class="source-error" role="status"></p>
+        <dl class="publication-values">
+          <div><dt>数据有效 / 检出</dt><dd id="ros-valid">—</dd></div>
+          <div><dt>消息状态</dt><dd id="ros-message-status">—</dd></div>
+          <div><dt>候选数 / 最大候选点数</dt><dd id="ros-candidates">—</dd></div>
+          <div><dt>中心 X / Y</dt><dd id="ros-center">—</dd></div>
+          <div><dt>中心距离</dt><dd id="ros-center-distance">—</dd></div>
+          <div><dt>最近点距离</dt><dd id="ros-nearest">—</dd></div>
+          <div><dt>宽 Y / 深 X</dt><dd id="ros-size">—</dd></div>
+          <div><dt>包围盒面积</dt><dd id="ros-area">—</dd></div>
+        </dl>
+        <details id="ros-details"><summary>完整消息</summary><pre id="ros-message">—</pre></details>
+        <p class="note">频率统计本进程成功调用 publish 的次数，不代表订阅者接收频率。下方消息为最近一次发布；红框为当前分析结果，两者可能短暂不同。</p>
+      </section>
+      <footer><span>只读订阅雷达 · 不发送车辆控制指令</span><span id="footer-stats">接收 0 帧 · 分析 0 次</span></footer>
+    </section>
+  </main>
+</body>
+</html>

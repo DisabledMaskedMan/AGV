@@ -1,0 +1,21 @@
+mid360_suspended_object_detection:
+  ros__parameters:
+    input_topic: /livox/lidar
+    expected_frame: livox_frame
+    # Bounds are relative to the LiDAR frame. Calibrate for sensor mounting and floor level.
+    min_x: 0.3
+    max_x: 5.0
+    min_y: -1.0
+    max_y: 1.0
+    min_z: 1.2
+    max_z: 3.5
+    cluster_distance: 0.12
+    min_cluster_points: 8
+    max_cluster_points: 100000
+    min_width: 0.08
+    max_width: 2.0
+    min_height: 0.08
+    max_height: 2.5
+    min_depth: 0.08
+    max_depth: 3.0
+    cloud_timeout: 1.0

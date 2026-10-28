@@ -1,0 +1,10 @@
+{
+  "remote.restoreForwardedPorts": true,
+  "remote.portsAttributes": {
+    "8765": {
+      "label": "MID-360 扫描工作台",
+      "onAutoForward": "notify",
+      "protocol": "http"
+    }
+  }
+}
