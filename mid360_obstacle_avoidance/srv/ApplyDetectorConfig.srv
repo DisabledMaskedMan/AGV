@@ -1,0 +1,11 @@
+# Validate and persist these values with the ROI current at service execution.
+# No runtime change is committed if persistence fails.
+float64 cluster_distance_threshold
+uint32 min_obstacle_points
+float64 min_cluster_diagonal
+float64 min_cluster_volume
+float64 cloud_timeout
+---
+bool success
+string message
+DetectorConfig config

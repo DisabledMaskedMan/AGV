@@ -1,0 +1,70 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Background Color: 35; 35; 35
+    Fixed Frame: livox_frame
+    Frame Rate: 30
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 0.5
+      Plane: XY
+      Reference Frame: <Fixed Frame>
+    - Class: rviz_default_plugins/PointCloud2
+      Name: MID360 Point Cloud
+      Enabled: true
+      Topic:
+        Value: /mid360_obstacle_avoidance/pointcloud
+        Reliability Policy: Best Effort
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 1
+      Position Transformer: XYZ
+      Color Transformer: FlatColor
+      Color: 230; 230; 230
+      Style: Points
+      Size (Pixels): 3
+      Size (m): 0.015
+      Decay Time: 0
+    - Class: rviz_default_plugins/Marker
+      Name: ROI Box
+      Enabled: true
+      Topic:
+        Value: /mid360_obstacle_avoidance/roi_marker
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Depth: 1
+    - Class: rviz_default_plugins/InteractiveMarkers
+      Name: ROI Drag Handles and Save Menu
+      Enabled: true
+      Interactive Markers Namespace: /mid360_obstacle_avoidance/roi_editor
+      Show Descriptions: true
+      Show Axes: false
+      Show Visual Aids: true
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: false
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 4
+      Focal Point:
+        X: 1
+        Y: 0
+        Z: 0
+      Pitch: 0.5
+      Yaw: 0.8
+      Target Frame: <Fixed Frame>
+Window Geometry:
+  Width: 1280
+  Height: 800

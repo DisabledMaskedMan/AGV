@@ -1,0 +1,25 @@
+mid360_obstacle_avoidance:
+  ros__parameters:
+    # Enable via launch: enable_roi_editor:=true (default: no GUI).
+    enable_roi_editor: false
+    # Wait for enable_detection=true; false commands disable stop requests too.
+    detection_enabled_on_start: false
+    input_topic: /livox/lidar
+    expected_frame: livox_frame
+    # ROI uses the input frame: +X forward, +Y left, +Z up; units: meters.
+    roi_min_x: 0.10372185853619575
+    roi_max_x: 1.6716953768827503
+    roi_min_y: -0.99397075563058057
+    roi_max_y: 0.28468717844325264
+    roi_min_z: -0.066421105833003688
+    roi_max_z: 0.5
+    # Maximum 3D distance between adjacent points (meters), inclusive.
+    cluster_distance_threshold: 0.1
+    # Minimum points per connected cluster, not total ROI points.
+    min_obstacle_points: 10
+    # Minimum axis-aligned bounding-box diagonal (meters), inclusive.
+    min_cluster_diagonal: 0.1
+    # Optional bounding-box volume (m^3), inclusive; 0 disables this filter.
+    min_cluster_volume: 0.0
+    cloud_timeout: 0.5
+    enable_web_editor: false  # Launch argument starts the Web backend.

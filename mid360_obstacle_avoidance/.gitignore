@@ -1,0 +1,31 @@
+# Local deployment backups, staging checkouts and verification artifacts
+.deployment/
+
+# ROS / colcon build output
+build/
+install/
+log/
+
+# Python and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Compiled and temporary files
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.log
+*.tmp
+*.roi.tmp.*
+*~
+
+# Local editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
